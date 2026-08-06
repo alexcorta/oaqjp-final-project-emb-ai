@@ -1,5 +1,7 @@
 """Flask server for the Emotion Detection web application."""
 
+# pylint: disable=invalid-name
+
 from flask import Flask, render_template, request
 
 from EmotionDetection import emotion_detector
@@ -16,9 +18,12 @@ def render_index_page():
 
 @app.route("/emotionDetector")
 def detect_emotion():
-    """Analyze the supplied text and return the formatted result."""
-    text_to_analyze = request.args.get("textToAnalyze")
+    """Analyze the supplied text and return a formatted result."""
+    text_to_analyze = request.args.get("textToAnalyze", "")
     response = emotion_detector(text_to_analyze)
+
+    if response["dominant_emotion"] is None:
+        return "Invalid text! Please try again!"
 
     anger = response["anger"]
     disgust = response["disgust"]
